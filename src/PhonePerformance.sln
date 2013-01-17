@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Phone
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListScrolling", "ListScrolling\ListScrolling.csproj", "{CDB304E3-5382-4D16-9449-09D255DAD476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonePerformance", "PhonePerformance\PhonePerformance.csproj", "{FCF263CD-388B-44E4-8A92-A4C5F670394F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterApi", "TwitterApi\TwitterApi.csproj", "{54AD87E4-D256-4819-95E9-2E7CA4CFF8D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageLoading", "ImageLoading\ImageLoading.csproj", "{A27EBFBA-D71A-4249-B8CC-323FD0529C85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDB304E3-5382-4D16-9449-09D255DAD476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB304E3-5382-4D16-9449-09D255DAD476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB304E3-5382-4D16-9449-09D255DAD476}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{CDB304E3-5382-4D16-9449-09D255DAD476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB304E3-5382-4D16-9449-09D255DAD476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB304E3-5382-4D16-9449-09D255DAD476}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FCF263CD-388B-44E4-8A92-A4C5F670394F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCF263CD-388B-44E4-8A92-A4C5F670394F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCF263CD-388B-44E4-8A92-A4C5F670394F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCF263CD-388B-44E4-8A92-A4C5F670394F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54AD87E4-D256-4819-95E9-2E7CA4CFF8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54AD87E4-D256-4819-95E9-2E7CA4CFF8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54AD87E4-D256-4819-95E9-2E7CA4CFF8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54AD87E4-D256-4819-95E9-2E7CA4CFF8D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A27EBFBA-D71A-4249-B8CC-323FD0529C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A27EBFBA-D71A-4249-B8CC-323FD0529C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A27EBFBA-D71A-4249-B8CC-323FD0529C85}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A27EBFBA-D71A-4249-B8CC-323FD0529C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A27EBFBA-D71A-4249-B8CC-323FD0529C85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A27EBFBA-D71A-4249-B8CC-323FD0529C85}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
