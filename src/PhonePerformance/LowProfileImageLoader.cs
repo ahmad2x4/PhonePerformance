@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +30,8 @@ namespace Delay
         private static readonly Queue<IAsyncResult> _pendingResponses = new Queue<IAsyncResult>();
         private static readonly object _syncBlock = new object();
         private static bool _exiting;
+
+        private static string _cacheFolderName = "cache-perf";
 
         /// <summary>
         /// Gets the value of the Uri to use for providing the contents of the Image's Source property.
@@ -93,6 +98,7 @@ namespace Delay
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Linear flow is easy to understand.")]
         private static void WorkerThreadProc(object unused)
         {
+
             Random rand = new Random();
             var pendingRequests = new List<PendingRequest>();
             var pendingResponses = new Queue<IAsyncResult>();
@@ -148,10 +154,20 @@ namespace Delay
                     count--;
                     if (pendingRequest.Uri.IsAbsoluteUri)
                     {
-                        // Download from network
-                        var webRequest = HttpWebRequest.CreateHttp(pendingRequest.Uri);
-                        webRequest.AllowReadStreamBuffering = true; // Don't want to block this thread or the UI thread on network access
-                        webRequest.BeginGetResponse(HandleGetResponseResult, new ResponseState(webRequest, pendingRequest.Image, pendingRequest.Uri));
+                        //See if its already cached
+                        Stream stream = LoadStream(ComputeHash(pendingRequest.Uri));
+                        if (stream != null)
+                        {
+                            pendingCompletions.Enqueue(new PendingCompletion(pendingRequest.Image, pendingRequest.Uri, stream));
+                        }
+                        else
+                        {
+
+                            // Download from network
+                            var webRequest = HttpWebRequest.CreateHttp(pendingRequest.Uri);
+                            webRequest.AllowReadStreamBuffering = true; // Don't want to block this thread or the UI thread on network access
+                            webRequest.BeginGetResponse(HandleGetResponseResult, new ResponseState(webRequest, pendingRequest.Image, pendingRequest.Uri));
+                        }
                     }
                     else
                     {
@@ -202,6 +218,10 @@ namespace Delay
                                 try
                                 {
                                     bitmap.SetSource(pendingCompletion.Stream);
+                                    if (pendingCompletion.Uri.IsAbsoluteUri)
+                                    {
+                                        SaveStream(pendingCompletion.Stream, ComputeHash(pendingCompletion.Uri));
+                                    }
                                 }
                                 catch
                                 {
@@ -219,6 +239,79 @@ namespace Delay
                     });
                 }
             }
+        }
+        
+        private static Stream LoadStream(string hash)
+        {
+            Stream stream = null;
+            IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication(); // grab the storage
+            if (!store.DirectoryExists(_cacheFolderName)) // Check if folder exists
+                store.CreateDirectory(_cacheFolderName);
+
+            if (store.FileExists(Path.Combine(_cacheFolderName, hash))) // Check if file exists
+            {
+
+                IsolatedStorageFileStream save;
+                System.Diagnostics.Debug.WriteLine(string.Format("Read:{0}", hash));
+                try
+                {
+                    save = new IsolatedStorageFileStream(Path.Combine(_cacheFolderName, hash), FileMode.Open, store);
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+                var reader = new BinaryReader(save);
+                stream = reader.BaseStream;
+            }
+            return stream;
+        }
+        private static void SaveStream(Stream input, string hash)
+        {
+            IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication(); // grab the storage
+            if (store.FileExists(Path.Combine(_cacheFolderName,  hash))) // Check if file exists
+                return;
+            if (!store.DirectoryExists(_cacheFolderName)) // Check if folder exists
+                store.CreateDirectory(_cacheFolderName);
+            
+
+
+            System.Diagnostics.Debug.WriteLine(string.Format("Write:{0}", hash));
+            System.Diagnostics.Debug.WriteLine(store.AvailableFreeSpace);
+            FileStream stream = store.OpenFile(Path.Combine(_cacheFolderName, hash), FileMode.Create); // Open a file in Create mode
+            BinaryWriter writer = new BinaryWriter(stream);
+            byte[] buffer = new byte[8 * 1024];
+            int len;
+            if (input.Length == input.Position)
+                input.Position = 0;
+            while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                stream.Write(buffer, 0, len);
+            }   
+            writer.Close();
+        }
+
+        private static string ComputeHash(Uri uri)
+        {
+            string result = "";
+            using (SHA1Managed sha1 = new SHA1Managed())
+            {
+                byte[] hash = sha1.ComputeHash(GetBytes(uri.ToString().ToLower()));
+                StringBuilder formatted = new StringBuilder(2 * hash.Length);
+                foreach (byte b in hash)
+                {
+                    formatted.AppendFormat("{0:X2}", b);
+                }
+                result = formatted.ToString();
+            }
+            return result;
+        }
+
+        private static byte[] GetBytes(string str)
+        {
+            byte[] bytes = new byte[str.Length * sizeof(char)];
+            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+            return bytes;
         }
 
         private static void OnUriSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)

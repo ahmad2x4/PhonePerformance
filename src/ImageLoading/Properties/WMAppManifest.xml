@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{c8ea9b29-fb7c-46c4-9500-d8e085b187ad}" Title="ImageLoading" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="ImageLoading author" Description="Sample description" Publisher="ImageLoading">
+  <App xmlns="" ProductID="{615e3992-dfa1-47a7-a257-b29f5c168f00}" Title="ImageLoading" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="ImageLoading author" Description="Sample description" Publisher="ImageLoading">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_GAMERSERVICES" />
